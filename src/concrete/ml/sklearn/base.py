@@ -641,17 +641,22 @@ class BaseEstimator:
                         predict_method = partial(
                             self.fhe_circuit.graph, p_error=self.fhe_circuit.p_error
                         )
+                        q_y_pred_i = predict_method(q_X_i)
 
                     # Else, use the official simulation method
                     else:
-                        predict_method = self.fhe_circuit.simulate  # pragma: no cover
+                        q_y_pred_i = self.fhe_circuit.simulate(q_X_i)  # pragma: no cover
+                        #predict_method = self.fhe_circuit.simulate  # pragma: no cover
 
                 # Else, use the FHE execution method
                 else:
-                    predict_method = self.fhe_circuit.encrypt_run_decrypt
+                    q_y_pred_i_enc = self.fhe_circuit.encrypt(q_X_i)
+                    q_y_pred_i_run = self.fhe_circuit.run(q_y_pred_i_enc)
+                    q_y_pred_i = self.fhe_circuit.decrypt(q_y_pred_i_run)
+                    #predict_method = self.fhe_circuit.encrypt_run_decrypt
 
                 # Execute the inference in FHE or with simulation
-                q_y_pred_i = predict_method(q_X_i)
+                #q_y_pred_i = predict_method(q_X_i)
 
                 q_y_pred_list.append(q_y_pred_i[0])
 
