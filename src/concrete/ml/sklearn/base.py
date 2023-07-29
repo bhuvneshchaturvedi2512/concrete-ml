@@ -650,6 +650,7 @@ class BaseEstimator:
 
                 # Else, use the FHE execution method
                 else:
+                    print("Changed encrypt_run_decrypt to encrypt then run then decrypt")
                     q_y_pred_i_enc = self.fhe_circuit.encrypt(q_X_i)
                     q_y_pred_i_run = self.fhe_circuit.run(q_y_pred_i_enc)
                     q_y_pred_i = self.fhe_circuit.decrypt(q_y_pred_i_run)
